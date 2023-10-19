@@ -19,7 +19,17 @@ def enviar():
 
 @app.route('/receber', methods=['GET'])
 def receber():
-    return jsonify({'mensagens': mensagens})
+    id_parameter = request.args.get("id")
+    if id_parameter:
+        try:
+            id_parameter = int(id_parameter)
+            mensagens_filtered = [mensagem for mensagem in mensagens if mensagem["id"] >= id_parameter]
+            return jsonify({"mensagens" : mensagens_filtered})
+        except ValueError:
+            return jsonify({"status": "ID deve ser um número válido"}), 400
+    else:
+        return jsonify({'mensagens': mensagens})
+    
 
 if __name__ == '__main__':
     app.run(debug=True, port=5555)
